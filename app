@@ -1,1 +1,99 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bible Olympics Web App</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f5f5f5; }
+    nav { background: #333; display: flex; justify-content: center; }
+    nav button {
+      background: none; border: none; color: white; padding: 1rem 2rem;
+      cursor: pointer; font-size: 1rem;
+    }
+    nav button.active { background: #007acc; }
+    section { display: none; padding: 2rem; max-width: 800px; margin: auto; }
+    section.active { display: block; }
+    .scoreboard input { width: 50px; text-align: center; }
+    .flashcard { margin-top: 1rem; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .leaderboard { margin-top: 1rem; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <button onclick="switchTab('score')" class="active">Score Keeper</button>
+  <button onclick="switchTab('flashcards')">Flashcards</button>
+  <button onclick="switchTab('leaderboard')">Leaderboard</button>
+</nav>
+
+<section id="score" class="active">
+  <h2>Score Keeper</h2>
+  <div class="scoreboard">
+    <div>
+      <label>Team 1: <input type="number" id="team1" value="0"></label>
+      <button onclick="adjustScore('team1', 1)">+1</button>
+      <button onclick="adjustScore('team1', -1)">-1</button>
+    </div>
+    <div>
+      <label>Team 2: <input type="number" id="team2" value="0"></label>
+      <button onclick="adjustScore('team2', 1)">+1</button>
+      <button onclick="adjustScore('team2', -1)">-1</button>
+    </div>
+  </div>
+</section>
+
+<section id="flashcards">
+  <h2>Random Bible Verse Flashcards</h2>
+  <button onclick="showRandomVerse()">Show Random Verse</button>
+  <div class="flashcard" id="verseDisplay">Click to get a random verse</div>
+</section>
+
+<section id="leaderboard">
+  <h2>Leaderboard</h2>
+  <button onclick="updateLeaderboard()">Update Leaderboard</button>
+  <div class="leaderboard" id="leaderboardTable"></div>
+</section>
+
+<script>
+  const verses = [
+    "Romans 8:28 - All things work together for good...",
+    "John 3:16 - For God so loved the world...",
+    "Philippians 4:13 - I can do all things through Christ..."
+  ];
+
+  function switchTab(tabId) {
+    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+    document.querySelector(`#${tabId}`).classList.add('active');
+    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`nav button[onclick*='${tabId}']`).classList.add('active');
+  }
+
+  function adjustScore(teamId, delta) {
+    const input = document.getElementById(teamId);
+    input.value = parseInt(input.value) + delta;
+  }
+
+  function showRandomVerse() {
+    const random = verses[Math.floor(Math.random() * verses.length)];
+    document.getElementById('verseDisplay').innerText = random;
+  }
+
+  function updateLeaderboard() {
+    const scores = [
+      { team: "Team 1", score: parseInt(document.getElementById('team1').value) },
+      { team: "Team 2", score: parseInt(document.getElementById('team2').value) }
+    ];
+    scores.sort((a, b) => b.score - a.score);
+    let html = "<ol>";
+    scores.forEach(s => {
+      html += `<li>${s.team}: ${s.score} pts</li>`;
+    });
+    html += "</ol>";
+    document.getElementById('leaderboardTable').innerHTML = html;
+  }
+</script>
+
+</body>
+</html>
 
