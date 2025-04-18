@@ -10,26 +10,18 @@
     header img { height: 80px; vertical-align: middle; }
     header h1 { display: inline-block; margin-left: 0.5rem; font-size: 1.8rem; vertical-align: middle; }
     nav { background: #333; display: flex; justify-content: center; flex-wrap: wrap; }
-    nav button {
-      background: none; border: none; color: white; padding: 1rem 2rem; cursor: pointer; font-size: 1rem; flex: 1 1 auto;
-    }
+    nav button { background: none; border: none; color: white; padding: 1rem 1.5rem; cursor: pointer; font-size: 1rem; flex: 1 1 auto; }
     nav button.active { background: #007acc; }
-    section { display: none; padding: 2rem; max-width: 900px; margin: auto; }
+    section { display: none; padding: 1rem; max-width: 900px; margin: auto; }
     section.active { display: block; }
-    /* Registration */
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center; }
+    /* Responsive Grid and Tables */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-grid label { font-weight: bold; }
     .form-grid input { padding: 0.5rem; width: 100%; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; display: block; overflow-x: auto; }
-    th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; white-space: nowrap; }
-    /* Score & Summary */
-    .event { margin-bottom: 1.5rem; }
-    .event h3 { margin-bottom: 0.5rem; }
-    .points { margin-top: 1rem; }
-    .points li { margin: 0.2rem 0; }
-    input[type="number"] { width: 60px; }
-
-    /* Responsive adjustments */
+    .score-event { margin-bottom: 1.5rem; }
+    .score-event table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+    input[type="number"] { width: 4rem; }
     @media (max-width: 600px) {
       header img { height: 60px; }
       header h1 { font-size: 1.4rem; }
@@ -37,7 +29,7 @@
       nav button { padding: 0.8rem; font-size: 0.9rem; }
       .form-grid { grid-template-columns: 1fr; }
       input[type="number"] { width: 100%; }
-      table { font-size: 0.9rem; }
+      table { font-size: 0.9rem; overflow-x: auto; display: block; }
     }
   </style>
 </head>
@@ -46,141 +38,106 @@
     <img src="olympics logo.png" alt="Bible Olympics Logo" />
     <h1>Bible Olympics 2025 Tracker App</h1>
   </header>
-
   <nav>
     <button onclick="switchTab('registration')" class="active">Team Registration</button>
-    <button onclick="switchTab('scores')">Score Systems</button>
+    <button onclick="switchTab('scores')">Score Entry</button>
     <button onclick="switchTab('summary')">Event Summary</button>
+    <button onclick="switchTab('leaderboard')">Leaderboard</button>
   </nav>
 
+  <!-- Registration -->
   <section id="registration" class="active">
     <h2>Team Registration</h2>
     <form id="registrationForm">
       <div class="form-grid">
-        <label for="teamName">Team Name</label>
-        <input type="text" id="teamName" required />
-        <label for="member1">Member 1 Name</label>
-        <input type="text" id="member1" required />
-        <label for="age1">Member 1 Age</label>
-        <input type="number" id="age1" min="1" required />
-        <label for="member2">Member 2 Name</label>
-        <input type="text" id="member2" required />
-        <label for="age2">Member 2 Age</label>
-        <input type="number" id="age2" min="1" required />
-        <label for="member3">Member 3 Name</label>
-        <input type="text" id="member3" required />
-        <label for="age3">Member 3 Age</label>
-        <input type="number" id="age3" min="1" required />
+        <label>Team Name<input type="text" id="teamName" required /></label>
+        <label>Member 1 Name<input type="text" id="member1" required /></label>
+        <label>Member 1 Age<input type="number" id="age1" min="1" required /></label>
+        <label>Member 2 Name<input type="text" id="member2" required /></label>
+        <label>Member 2 Age<input type="number" id="age2" min="1" required /></label>
+        <label>Member 3 Name<input type="text" id="member3" required /></label>
+        <label>Member 3 Age<input type="number" id="age3" min="1" required /></label>
       </div>
       <button type="submit" style="margin-top:1rem;">Add Team</button>
     </form>
-
-    <table id="teamsTable">
-      <thead>
-        <tr><th>Team</th><th>Members (Age)</th><th>Actions</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <table id="teamsTable"><thead><tr><th>Team</th><th>Members (Age)</th><th>Actions</th></tr></thead><tbody></tbody></table>
   </section>
 
+  <!-- Score Entry by Event -->
   <section id="scores">
-    <h2>Score Systems</h2>
-    <div class="event">
+    <h2>Score Entry</h2>
+    <div class="score-event" id="event-sword">
       <h3>Sword Drill Showdown</h3>
-      <p>One runner per round races to find and read a called‑out verse from a closed Bible. 3 verses per team (9 total). Emphasizes Speed, Knowledge/Memory, Physical Agility, & Teamwork.</p>
+      <table><thead><tr><th>Team</th><th>Score</th></tr></thead><tbody></tbody></table>
     </div>
-    <div class="event">
+    <div class="score-event" id="event-relay">
       <h3>Books of the Bible Relay</h3>
-      <p>Teams race to place shuffled OT/NT book cards in correct order relay‑style. Emphasizes Speed, Knowledge/Memory, Physical Agility, & Teamwork.</p>
+      <table><thead><tr><th>Team</th><th>Score</th></tr></thead><tbody></tbody></table>
     </div>
-    <div class="event">
+    <div class="score-event" id="event-memo">
       <h3>Bible Memorization</h3>
-      <p>Teams work together to unscramble and write a memory verse, with bonus for perfect recitation. Emphasizes Speed, Accuracy (Knowledge), Movement, & Teamwork.</p>
+      <table><thead><tr><th>Team</th><th>Score</th></tr></thead><tbody></tbody></table>
     </div>
-    <div class="event">
+    <div class="score-event" id="event-trivia">
       <h3>Bible Trivia Questions</h3>
-      <p>Seated players ring a bell to answer packet questions; correct buzz‑in earns points. Tests Fast Recall, Biblical Knowledge, Movement, & Teamwork.</p>
+      <table><thead><tr><th>Team</th><th>Score</th></tr></thead><tbody></tbody></table>
     </div>
-
-    <table id="scoreTable">
-      <thead>
-        <tr>
-          <th>Team</th><th>Sword</th><th>Relay</th><th>Memo</th><th>Trivia</th>
-          <th>Spirit</th><th>Knowledge</th><th>Fastest</th><th>Name</th><th>Total</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <div id="liveLeaderboard"></div>
+    <div class="score-event" id="event-bonus">
+      <h3>Bonus Points</h3>
+      <table><thead><tr><th>Team</th><th>Spirit</th><th>Knowledge</th><th>Fastest</th><th>Name</th></tr></thead><tbody></tbody></table>
+    </div>
   </section>
 
+  <!-- Event Summaries -->
   <section id="summary">
     <h2>Event Summary</h2>
     <ul>
       <li><strong>Sword Drill Showdown:</strong> Race to locate and read verses fastest.</li>
-      <li><strong>Books of the Bible Relay:</strong> Order OT/NT books relay-style under time pressure.</li>
+      <li><strong>Books of the Bible Relay:</strong> Order OT/NT books relay-style.</li>
       <li><strong>Bible Memorization:</strong> Unscramble and write verses; bonus for perfect recitation.</li>
-      <li><strong>Bible Trivia Questions:</strong> Buzz in to answer questions quickly and accurately.</li>
+      <li><strong>Bible Trivia Questions:</strong> Buzz in to answer questions quickly.</li>
     </ul>
+  </section>
+
+  <!-- Leaderboard -->
+  <section id="leaderboard">
+    <h2>Leaderboard</h2>
+    <div id="liveLeaderboard"></div>
   </section>
 
   <script>
     function switchTab(id) {
-      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
       document.querySelector(`nav button[onclick*="${id}"]`).classList.add('active');
     }
 
-    let teams = JSON.parse(localStorage.getItem('bibleTeams')) || [];
-    teams = teams.map(t => { if (!t.scores) t.scores = { sword:0, relay:0, memo:0, trivia:0, bonusSpirit:0, bonusKnowledge:0, bonusFastest:0, bonusName:0, total:0 }; return t; });
-    function saveTeams() { localStorage.setItem('bibleTeams', JSON.stringify(teams)); }
+    // Data store
+    let teams = JSON.parse(localStorage.getItem('bibleTeams'))||[];
+    teams = teams.map(t=>{ if(!t.scores) t.scores={sword:0,relay:0,memo:0,trivia:0,bonusSpirit:0,bonusKnowledge:0,bonusFastest:0,bonusName:0}; return t; });
+    function save(){ localStorage.setItem('bibleTeams',JSON.stringify(teams)); }
 
-    function renderRegistration() {
-      const tbody = document.querySelector('#teamsTable tbody'); tbody.innerHTML = '';
-      teams.forEach((team,i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${team.name}</td><td>${team.members.map(m=>`${m.name} (${m.age})`).join(', ')}</td><td><button onclick="deleteTeam(${i})">Delete</button></td>`;
-        tbody.appendChild(tr);
-      });
-    }
-    function deleteTeam(i) { teams.splice(i,1); saveTeams(); renderAll(); }
+    // Render Registration
+    function renderRegistration(){ const tb=document.querySelector('#teamsTable tbody'); tb.innerHTML=''; teams.forEach((t,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${t.name}</td><td>${t.members.map(m=>`${m.name} (${m.age})`).join(', ')}</td><td><button onclick="del(${i})">Delete</button></td>`; tb.appendChild(tr); }); }
+    function del(i){ teams.splice(i,1); save(); renderAll(); }
 
-    function renderScores() {
-      const tbody = document.querySelector('#scoreTable tbody'); tbody.innerHTML = '';
-      teams.forEach((team,i) => {
-        const s = team.scores;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${team.name}</td>
-          <td><input type="number" min="0" value="${s.sword}" oninput="updateScore(${i},'sword',this.value)"></td>
-          <td><input type="number" min="0" value="${s.relay}" oninput="updateScore(${i},'relay',this.value)"></td>
-          <td><input type="number" min="0" value="${s.memo}" oninput="updateScore(${i},'memo',this.value)"></td>
-          <td><input type="number" min="0" value="${s.trivia}" oninput="updateScore(${i},'trivia',this.value)"></td>
-          <td><input type="number" min="0" value="${s.bonusSpirit}" oninput="updateScore(${i},'bonusSpirit',this.value)"></td>
-          <td><input type="number" min="0" value="${s.bonusKnowledge}" oninput="updateScore(${i},'bonusKnowledge',this.value)"></td>
-          <td><input type="number" min="0" value="${s.bonusFastest}" oninput="updateScore(${i},'bonusFastest',this.value)"></td>
-          <td><input type="number" min="0" value="${s.bonusName}" oninput="updateScore(${i},'bonusName',this.value)"></td>
-          <td>${s.total}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-    function updateScore(i,field,val) { teams[i].scores[field]=parseInt(val)||0; const sc=teams[i].scores; sc.total=sc.sword+sc.relay+sc.memo+sc.trivia+sc.bonusSpirit+sc.bonusKnowledge+sc.bonusFastest+sc.bonusName; saveTeams(); renderScores(); renderLeaderboard(); }
+    // Render each score event
+    function renderEvent(eventId, field){ const container=document.querySelector(`#${eventId} tbody`); container.innerHTML=''; teams.forEach((t,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${t.name}</td><td><input type="number" min="0" value="${t.scores[field]}" oninput="upd(${i},'${field}',this.value)"></td>`; container.appendChild(tr); }); }
 
-    function renderLeaderboard() {
-      const container = document.getElementById('liveLeaderboard'); const sorted=[...teams].sort((a,b)=>b.scores.total-a.scores.total);
-      let html='<h3>Live Leaderboard</h3><ol>';
-      sorted.forEach(t=>html+=`<li>${t.name}: ${t.scores.total} pts</li>`);
-      container.innerHTML=html+'</ol>';
-    }
+    // Render bonus
+    function renderBonus(){ const tb=document.querySelector('#event-bonus tbody'); tb.innerHTML=''; teams.forEach((t,i)=>{ const b=t.scores; const tr=document.createElement('tr'); tr.innerHTML=`<td>${t.name}</td><td><input type='number' min='0' value='${b.bonusSpirit}' oninput="upd(${i},'bonusSpirit',this.value)"></td><td><input type='number' min='0' value='${b.bonusKnowledge}' oninput="upd(${i},'bonusKnowledge',this.value)"></td><td><input type='number' min='0' value='${b.bonusFastest}' oninput="upd(${i},'bonusFastest',this.value)"></td><td><input type='number' min='0' value='${b.bonusName}' oninput="upd(${i},'bonusName',this.value)"></td>`; tb.appendChild(tr); }); }
 
-    document.getElementById('registrationForm').addEventListener('submit', e => { e.preventDefault();
-      const newTeam={name:document.getElementById('teamName').value.trim(),members:[{name:document.getElementById('member1').value.trim(),age:document.getElementById('age1').value},{name:document.getElementById('member2').value.trim(),age:document.getElementById('age2').value},{name:document.getElementById('member3').value.trim(),age:document.getElementById('age3').value}],scores:{sword:0,relay:0,memo:0,trivia:0,bonusSpirit:0,bonusKnowledge:0,bonusFastest:0,bonusName:0,total:0}};
-      teams.push(newTeam); e.target.reset(); saveTeams(); renderAll(); });
+    function upd(i,field,val){ teams[i].scores[field]=parseInt(val)||0; save(); renderAll(); }
 
-    function renderAll() { renderRegistration(); renderScores(); renderLeaderboard(); }
+    // Leaderboard
+    function renderLeaderboard(){ const out=document.getElementById('liveLeaderboard'); const sorted=[...teams].map(t=>({name:t.name,total:Object.values(t.scores).reduce((a,v)=>a+v,0)})).sort((a,b)=>b.total-a.total); let html='<ol>'; sorted.forEach(x=>html+=`<li>${x.name}: ${x.total} pts</li>`); out.innerHTML=html+'</ol>'; }
+
+    // Handle registration
+    document.getElementById('registrationForm').addEventListener('submit',e=>{ e.preventDefault(); const nt={name:document.getElementById('teamName').value.trim(), members:[{name:document.getElementById('member1').value.trim(),age:document.getElementById('age1').value},{name:document.getElementById('member2').value.trim(),age:document.getElementById('age2').value},{name:document.getElementById('member3').value.trim(),age:document.getElementById('age3').value}], scores:{sword:0,relay:0,memo:0,trivia:0,bonusSpirit:0,bonusKnowledge:0,bonusFastest:0,bonusName:0}}; teams.push(nt); e.target.reset(); save(); renderAll(); });
+
+    // Render all views
+    function renderAll(){ renderRegistration(); renderEvent('event-sword','sword'); renderEvent('event-relay','relay'); renderEvent('event-memo','memo'); renderEvent('event-trivia','trivia'); renderBonus(); renderLeaderboard(); }
     renderAll();
   </script>
 </body>
