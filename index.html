@@ -17,17 +17,16 @@
     nav button.active { background: #007acc; }
     section { display: none; padding: 2rem; max-width: 900px; margin: auto; }
     section.active { display: block; }
-    /* Registration */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center; }
     .form-grid label { font-weight: bold; }
     .form-grid input { padding: 0.5rem; width: 100%; }
     table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
     th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
-    /* Score & Summary */
     .event { margin-bottom: 1.5rem; }
     .event h3 { margin-bottom: 0.5rem; }
     .points { margin-top: 1rem; }
     .points li { margin: 0.2rem 0; }
+    input[type="number"] { width: 60px; }
   </style>
 </head>
 <body>
@@ -48,17 +47,14 @@
       <div class="form-grid">
         <label for="teamName">Team Name</label>
         <input type="text" id="teamName" required />
-
         <label for="member1">Member 1 Name</label>
         <input type="text" id="member1" required />
         <label for="age1">Member 1 Age</label>
         <input type="number" id="age1" min="1" required />
-
         <label for="member2">Member 2 Name</label>
         <input type="text" id="member2" required />
         <label for="age2">Member 2 Age</label>
         <input type="number" id="age2" min="1" required />
-
         <label for="member3">Member 3 Name</label>
         <input type="text" id="member3" required />
         <label for="age3">Member 3 Age</label>
@@ -69,7 +65,7 @@
 
     <table id="teamsTable">
       <thead>
-        <tr><th>Team</th><th>Members (Age)</th></tr>
+        <tr><th>Team</th><th>Members (Age)</th><th>Actions</th></tr>
       </thead>
       <tbody></tbody>
     </table>
@@ -94,11 +90,26 @@
       <p>Seated players ring a bell to answer packet questions; correct buzz‑in earns points. Tests Fast Recall, Biblical Knowledge, Movement, & Teamwork.</p>
     </div>
 
-    <ul class="points">
-      <li><strong>Placements (per event):</strong> 1st = 10 pts, 2nd = 7 pts, 3rd = 5 pts, 4th = 2 pts</li>
-      <li><strong>Bonus Points:</strong> +3 pts (Best Team Spirit), +2 pts (Knowledge), +2 pts (Fastest Finders), +1 pt (Best Team Name)</li>
-      <li><strong>Max Possible per Team:</strong> 48 pts</li>
-    </ul>
+    <!-- Score Inputs Table -->
+    <table id="scoreTable">
+      <thead>
+        <tr>
+          <th>Team</th>
+          <th>Sword Drill</th>
+          <th>Books Relay</th>
+          <th>Memorization</th>
+          <th>Trivia</th>
+          <th>Bonus Spirit</th>
+          <th>Bonus Knowledge</th>
+          <th>Bonus Fastest</th>
+          <th>Bonus Name</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div id="liveLeaderboard"></div>
   </section>
 
   <section id="summary">
@@ -119,25 +130,86 @@
       document.querySelector(`nav button[onclick*="${id}"]`).classList.add('active');
     }
 
-    // Team Registration Logic
-    const form = document.getElementById('registrationForm');
-    const tableBody = document.querySelector('#teamsTable tbody');
+    // Load or initialize teams
     let teams = JSON.parse(localStorage.getItem('bibleTeams')) || [];
+    teams = teams.map(t => {
+      if (!t.scores) t.scores = {
+        sword:0, relay:0, memo:0, trivia:0,
+        bonusSpirit:0, bonusKnowledge:0, bonusFastest:0, bonusName:0,
+        total:0
+      };
+      return t;
+    });
 
-    function saveAndRender() {
+    function saveTeams() {
       localStorage.setItem('bibleTeams', JSON.stringify(teams));
-      tableBody.innerHTML = '';
-      teams.forEach(team => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
+    }
+
+    // Render Registration Table
+    function renderRegistration() {
+      const tbody = document.querySelector('#teamsTable tbody');
+      tbody.innerHTML = '';
+      teams.forEach((team, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
           <td>${team.name}</td>
-          <td>${team.members.map(m => `${m.name} (${m.age})`).join(', ')}</td>
+          <td>${team.members.map(m=>`${m.name} (${m.age})`).join(', ')}</td>
+          <td><button onclick="deleteTeam(${i})">Delete</button></td>
         `;
-        tableBody.appendChild(row);
+        tbody.appendChild(tr);
       });
     }
 
-    form.addEventListener('submit', e => {
+    function deleteTeam(index) {
+      teams.splice(index,1);
+      saveTeams();
+      renderAll();
+    }
+
+    // Render Scores Inputs
+    function renderScores() {
+      const tbody = document.querySelector('#scoreTable tbody');
+      tbody.innerHTML = '';
+      teams.forEach((team,i) => {
+        const s = team.scores;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${team.name}</td>
+          <td><input type="number" min="0" value="${s.sword}" oninput="updateScoreField(${i},'sword',this.value)"></td>
+          <td><input type="number" min="0" value="${s.relay}" oninput="updateScoreField(${i},'relay',this.value)"></td>
+          <td><input type="number" min="0" value="${s.memo}" oninput="updateScoreField(${i},'memo',this.value)"></td>
+          <td><input type="number" min="0" value="${s.trivia}" oninput="updateScoreField(${i},'trivia',this.value)"></td>
+          <td><input type="number" min="0" value="${s.bonusSpirit}" oninput="updateScoreField(${i},'bonusSpirit',this.value)"></td>
+          <td><input type="number" min="0" value="${s.bonusKnowledge}" oninput="updateScoreField(${i},'bonusKnowledge',this.value)"></td>
+          <td><input type="number" min="0" value="${s.bonusFastest}" oninput="updateScoreField(${i},'bonusFastest',this.value)"></td>
+          <td><input type="number" min="0" value="${s.bonusName}" oninput="updateScoreField(${i},'bonusName',this.value)"></td>
+          <td>${s.total}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateScoreField(teamIndex, field, val) {
+      teams[teamIndex].scores[field] = parseInt(val) || 0;
+      const sc = teams[teamIndex].scores;
+      sc.total = sc.sword + sc.relay + sc.memo + sc.trivia + sc.bonusSpirit + sc.bonusKnowledge + sc.bonusFastest + sc.bonusName;
+      saveTeams();
+      renderScores();
+      renderLeaderboard();
+    }
+
+    // Render Live Leaderboard
+    function renderLeaderboard() {
+      const container = document.getElementById('liveLeaderboard');
+      const sorted = [...teams].sort((a,b) => b.scores.total - a.scores.total);
+      let html = '<h3>Live Leaderboard</h3><ol>';
+      sorted.forEach(t => html += `<li>${t.name}: ${t.scores.total} pts</li>`);
+      html += '</ol>';
+      container.innerHTML = html;
+    }
+
+    // Handle Registration Form
+    document.getElementById('registrationForm').addEventListener('submit', e => {
       e.preventDefault();
       const newTeam = {
         name: document.getElementById('teamName').value.trim(),
@@ -145,15 +217,24 @@
           { name: document.getElementById('member1').value.trim(), age: document.getElementById('age1').value },
           { name: document.getElementById('member2').value.trim(), age: document.getElementById('age2').value },
           { name: document.getElementById('member3').value.trim(), age: document.getElementById('age3').value }
-        ]
+        ],
+        scores: { sword:0, relay:0, memo:0, trivia:0, bonusSpirit:0, bonusKnowledge:0, bonusFastest:0, bonusName:0, total:0 }
       };
       teams.push(newTeam);
-      form.reset();
-      saveAndRender();
+      e.target.reset();
+      saveTeams();
+      renderAll();
     });
 
-    // Initial render
-    saveAndRender();
+    // Render all sections
+    function renderAll() {
+      renderRegistration();
+      renderScores();
+      renderLeaderboard();
+    }
+
+    // Initial load
+    renderAll();
   </script>
 </body>
 </html>
