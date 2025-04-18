@@ -3,185 +3,157 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bible Olympics</title>
+  <title>Bible Olympics 2025 Tracker App</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background: #f5f5f5;
-    }
-    /* Header styling */
-    header {
-      text-align: center;
-      padding: 1rem;
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    header img {
-      height: 80px;
-    }
-    /* Tabs/nav */
-    nav {
-      background: #333;
-      display: flex;
-      justify-content: center;
-    }
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f5f5f5; }
+    header { text-align: center; padding: 1rem; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    header img { height: 80px; vertical-align: middle; }
+    header h1 { display: inline-block; margin-left: 0.5rem; font-size: 1.8rem; vertical-align: middle; }
+    nav { background: #333; display: flex; justify-content: center; }
     nav button {
-      background: none;
-      border: none;
-      color: white;
-      padding: 1rem 2rem;
-      cursor: pointer;
-      font-size: 1rem;
+      background: none; border: none; color: white; padding: 1rem 2rem;
+      cursor: pointer; font-size: 1rem;
     }
-    nav button.active {
-      background: #007acc;
-    }
-    /* Sections */
-    section {
-      display: none;
-      padding: 2rem;
-      max-width: 800px;
-      margin: auto;
-    }
-    section.active {
-      display: block;
-    }
-    /* Team entry cards */
-    .team-entry {
-      margin-bottom: 1rem;
-      background: #fff;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    input[type="text"], input[type="number"] {
-      padding: 0.4rem;
-      margin: 0.2rem;
-    }
-    .flashcard, .leaderboard {
-      margin-top: 1rem;
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
+    nav button.active { background: #007acc; }
+    section { display: none; padding: 2rem; max-width: 900px; margin: auto; }
+    section.active { display: block; }
+    /* Registration */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: center; }
+    .form-grid label { font-weight: bold; }
+    .form-grid input { padding: 0.5rem; width: 100%; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+    /* Score & Summary */
+    .event { margin-bottom: 1.5rem; }
+    .event h3 { margin-bottom: 0.5rem; }
+    .points { margin-top: 1rem; }
+    .points li { margin: 0.2rem 0; }
   </style>
 </head>
 <body>
-
-  <!-- Moved header inside <body> -->
   <header>
     <img src="olympics logo.png" alt="Bible Olympics Logo" />
+    <h1>Bible Olympics 2025 Tracker App</h1>
   </header>
 
   <nav>
-    <button onclick="switchTab('score')" class="active">Score Keeper</button>
-    <button onclick="switchTab('flashcards')">Flashcards</button>
-    <button onclick="switchTab('leaderboard')">Leaderboard</button>
+    <button onclick="switchTab('registration')" class="active">Team Registration</button>
+    <button onclick="switchTab('scores')">Score Systems</button>
+    <button onclick="switchTab('summary')">Event Summary</button>
   </nav>
 
-  <section id="score" class="active">
-    <h2>Score Keeper</h2>
-    <form id="teamForm">
-      <input type="text" placeholder="Team Name" id="teamName" required />
-      <input type="text" placeholder="Member Names (comma-separated)" id="members" required />
-      <input type="text" placeholder="Ages (comma-separated)" id="ages" required />
-      <button type="submit">Add Team</button>
+  <section id="registration" class="active">
+    <h2>Team Registration</h2>
+    <form id="registrationForm">
+      <div class="form-grid">
+        <label for="teamName">Team Name</label>
+        <input type="text" id="teamName" required />
+
+        <label for="member1">Member 1 Name</label>
+        <input type="text" id="member1" required />
+        <label for="age1">Member 1 Age</label>
+        <input type="number" id="age1" min="1" required />
+
+        <label for="member2">Member 2 Name</label>
+        <input type="text" id="member2" required />
+        <label for="age2">Member 2 Age</label>
+        <input type="number" id="age2" min="1" required />
+
+        <label for="member3">Member 3 Name</label>
+        <input type="text" id="member3" required />
+        <label for="age3">Member 3 Age</label>
+        <input type="number" id="age3" min="1" required />
+      </div>
+      <button type="submit" style="margin-top:1rem;">Add Team</button>
     </form>
-    <div id="teamsContainer"></div>
+
+    <table id="teamsTable">
+      <thead>
+        <tr><th>Team</th><th>Members (Age)</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </section>
 
-  <section id="flashcards">
-    <h2>Random Bible Verse Flashcards</h2>
-    <button onclick="showRandomVerse()">Show Random Verse</button>
-    <div class="flashcard" id="verseDisplay">Click to get a random verse</div>
+  <section id="scores">
+    <h2>Score Systems</h2>
+    <div class="event">
+      <h3>Sword Drill Showdown</h3>
+      <p>One runner per round races to find and read a called‑out verse from a closed Bible. 3 verses per team (9 total). Emphasizes Speed, Knowledge/Memory, Physical Agility, & Teamwork.</p>
+    </div>
+    <div class="event">
+      <h3>Books of the Bible Relay</h3>
+      <p>Teams race to place shuffled OT/NT book cards in correct order relay‑style. Emphasizes Speed, Knowledge/Memory, Physical Agility, & Teamwork.</p>
+    </div>
+    <div class="event">
+      <h3>Bible Memorization</h3>
+      <p>Teams work together to unscramble and write a memory verse, with bonus for perfect recitation. Emphasizes Speed, Accuracy (Knowledge), Movement, & Teamwork.</p>
+    </div>
+    <div class="event">
+      <h3>Bible Trivia Questions</h3>
+      <p>Seated players ring a bell to answer packet questions; correct buzz‑in earns points. Tests Fast Recall, Biblical Knowledge, Movement, & Teamwork.</p>
+    </div>
+
+    <ul class="points">
+      <li><strong>Placements (per event):</strong> 1st = 10 pts, 2nd = 7 pts, 3rd = 5 pts, 4th = 2 pts</li>
+      <li><strong>Bonus Points:</strong> +3 pts (Best Team Spirit), +2 pts (Knowledge), +2 pts (Fastest Finders), +1 pt (Best Team Name)</li>
+      <li><strong>Max Possible per Team:</strong> 48 pts</li>
+    </ul>
   </section>
 
-  <section id="leaderboard">
-    <h2>Leaderboard</h2>
-    <button onclick="updateLeaderboard()">Update Leaderboard</button>
-    <div class="leaderboard" id="leaderboardTable"></div>
+  <section id="summary">
+    <h2>Event Summary</h2>
+    <ul>
+      <li><strong>Sword Drill Showdown:</strong> Race to locate and read verses fastest.</li>
+      <li><strong>Books of the Bible Relay:</strong> Order OT/NT books relay-style under time pressure.</li>
+      <li><strong>Bible Memorization:</strong> Unscramble and write verses; bonus for perfect recitation.</li>
+      <li><strong>Bible Trivia Questions:</strong> Buzz in to answer questions quickly and accurately.</li>
+    </ul>
   </section>
 
   <script>
-    const verses = [
-      "Romans 8:28 - All things work together for good...",
-      "John 3:16 - For God so loved the world...",
-      "Philippians 4:13 - I can do all things through Christ..."
-    ];
-
-    function switchTab(tabId) {
-      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`nav button[onclick*='${tabId}']`).classList.add('active');
+    function switchTab(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.querySelector(`nav button[onclick*="${id}"]`).classList.add('active');
     }
 
-    const teamsContainer = document.getElementById('teamsContainer');
-    let teams = JSON.parse(localStorage.getItem('bibleOlympicsTeams')) || [];
+    // Team Registration Logic
+    const form = document.getElementById('registrationForm');
+    const tableBody = document.querySelector('#teamsTable tbody');
+    let teams = JSON.parse(localStorage.getItem('bibleTeams')) || [];
 
-    function saveTeams() {
-      localStorage.setItem('bibleOlympicsTeams', JSON.stringify(teams));
-    }
-
-    function renderTeams() {
-      teamsContainer.innerHTML = '';
-      teams.forEach((team, i) => {
-        const div = document.createElement('div');
-        div.className = 'team-entry';
-        div.innerHTML = `
-          <strong>${team.name}</strong><br>
-          Members: ${team.members}<br>
-          Ages: ${team.ages}<br>
-          Score: <input type="number" value="${team.score}" onchange="updateScore(${i}, this.value)" />
-          <button onclick="changeScore(${i}, 1)">+1</button>
-          <button onclick="changeScore(${i}, -1)">-1</button>
+    function saveAndRender() {
+      localStorage.setItem('bibleTeams', JSON.stringify(teams));
+      tableBody.innerHTML = '';
+      teams.forEach(team => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${team.name}</td>
+          <td>${team.members.map(m => `${m.name} (${m.age})`).join(', ')}</td>
         `;
-        teamsContainer.appendChild(div);
+        tableBody.appendChild(row);
       });
     }
 
-    function updateScore(i, v) {
-      teams[i].score = parseInt(v) || 0;
-      saveTeams();
-    }
-
-    function changeScore(i, delta) {
-      teams[i].score = (teams[i].score || 0) + delta;
-      saveTeams();
-      renderTeams();
-    }
-
-    document.getElementById('teamForm').addEventListener('submit', e => {
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      teams.push({
-        name: e.target.teamName.value,
-        members: e.target.members.value,
-        ages: e.target.ages.value,
-        score: 0
-      });
-      saveTeams();
-      renderTeams();
-      e.target.reset();
+      const newTeam = {
+        name: document.getElementById('teamName').value.trim(),
+        members: [
+          { name: document.getElementById('member1').value.trim(), age: document.getElementById('age1').value },
+          { name: document.getElementById('member2').value.trim(), age: document.getElementById('age2').value },
+          { name: document.getElementById('member3').value.trim(), age: document.getElementById('age3').value }
+        ]
+      };
+      teams.push(newTeam);
+      form.reset();
+      saveAndRender();
     });
 
-    function showRandomVerse() {
-      document.getElementById('verseDisplay').innerText =
-        verses[Math.floor(Math.random() * verses.length)];
-    }
-
-    function updateLeaderboard() {
-      const sorted = [...teams].sort((a, b) => b.score - a.score);
-      document.getElementById('leaderboardTable').innerHTML = `
-        <ol>
-          ${sorted.map(t => `<li><strong>${t.name}</strong>: ${t.score} pts</li>`).join('')}
-        </ol>`;
-    }
-
-    // On page load
-    renderTeams();
+    // Initial render
+    saveAndRender();
   </script>
-
 </body>
 </html>
