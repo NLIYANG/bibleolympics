@@ -1,137 +1,187 @@
-#adding logo
-<header style="text-align: center; padding: 1rem;">
-  <img src="olympics logo.png" alt="Bible Olympics Logo" style="height: 80px;" />
-</header>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bible Olympics</title>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f5f5f5; }
-    nav { background: #333; display: flex; justify-content: center; }
-    nav button {
-      background: none; border: none; color: white; padding: 1rem 2rem;
-      cursor: pointer; font-size: 1rem;
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f5f5f5;
     }
-    nav button.active { background: #007acc; }
-    section { display: none; padding: 2rem; max-width: 800px; margin: auto; }
-    section.active { display: block; }
-    .team-entry { margin-bottom: 1rem; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    input[type="text"], input[type="number"] { padding: 0.4rem; margin: 0.2rem; }
-    .flashcard, .leaderboard { margin-top: 1rem; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    /* Header styling */
+    header {
+      text-align: center;
+      padding: 1rem;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    header img {
+      height: 80px;
+    }
+    /* Tabs/nav */
+    nav {
+      background: #333;
+      display: flex;
+      justify-content: center;
+    }
+    nav button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    nav button.active {
+      background: #007acc;
+    }
+    /* Sections */
+    section {
+      display: none;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    section.active {
+      display: block;
+    }
+    /* Team entry cards */
+    .team-entry {
+      margin-bottom: 1rem;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    input[type="text"], input[type="number"] {
+      padding: 0.4rem;
+      margin: 0.2rem;
+    }
+    .flashcard, .leaderboard {
+      margin-top: 1rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
 
-<nav>
-  <button onclick="switchTab('score')" class="active">Score Keeper</button>
-  <button onclick="switchTab('flashcards')">Flashcards</button>
-  <button onclick="switchTab('leaderboard')">Leaderboard</button>
-</nav>
+  <!-- Moved header inside <body> -->
+  <header>
+    <img src="olympics logo.png" alt="Bible Olympics Logo" />
+  </header>
 
-<section id="score" class="active">
-  <h2>Score Keeper</h2>
-  <form id="teamForm">
-    <input type="text" placeholder="Team Name" id="teamName" required />
-    <input type="text" placeholder="Member Names (comma-separated)" id="members" required />
-    <input type="text" placeholder="Ages (comma-separated)" id="ages" required />
-    <button type="submit">Add Team</button>
-  </form>
-  <div id="teamsContainer"></div>
-</section>
+  <nav>
+    <button onclick="switchTab('score')" class="active">Score Keeper</button>
+    <button onclick="switchTab('flashcards')">Flashcards</button>
+    <button onclick="switchTab('leaderboard')">Leaderboard</button>
+  </nav>
 
-<section id="flashcards">
-  <h2>Random Bible Verse Flashcards</h2>
-  <button onclick="showRandomVerse()">Show Random Verse</button>
-  <div class="flashcard" id="verseDisplay">Click to get a random verse</div>
-</section>
+  <section id="score" class="active">
+    <h2>Score Keeper</h2>
+    <form id="teamForm">
+      <input type="text" placeholder="Team Name" id="teamName" required />
+      <input type="text" placeholder="Member Names (comma-separated)" id="members" required />
+      <input type="text" placeholder="Ages (comma-separated)" id="ages" required />
+      <button type="submit">Add Team</button>
+    </form>
+    <div id="teamsContainer"></div>
+  </section>
 
-<section id="leaderboard">
-  <h2>Leaderboard</h2>
-  <button onclick="updateLeaderboard()">Update Leaderboard</button>
-  <div class="leaderboard" id="leaderboardTable"></div>
-</section>
+  <section id="flashcards">
+    <h2>Random Bible Verse Flashcards</h2>
+    <button onclick="showRandomVerse()">Show Random Verse</button>
+    <div class="flashcard" id="verseDisplay">Click to get a random verse</div>
+  </section>
 
-<script>
-  const verses = [
-    "Romans 8:28 - All things work together for good...",
-    "John 3:16 - For God so loved the world...",
-    "Philippians 4:13 - I can do all things through Christ..."
-  ];
+  <section id="leaderboard">
+    <h2>Leaderboard</h2>
+    <button onclick="updateLeaderboard()">Update Leaderboard</button>
+    <div class="leaderboard" id="leaderboardTable"></div>
+  </section>
 
-  function switchTab(tabId) {
-    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
-    document.querySelector(`#${tabId}`).classList.add('active');
-    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`nav button[onclick*='${tabId}']`).classList.add('active');
-  }
+  <script>
+    const verses = [
+      "Romans 8:28 - All things work together for good...",
+      "John 3:16 - For God so loved the world...",
+      "Philippians 4:13 - I can do all things through Christ..."
+    ];
 
-  const teamsContainer = document.getElementById('teamsContainer');
-  let teams = JSON.parse(localStorage.getItem('bibleOlympicsTeams')) || [];
+    function switchTab(tabId) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`nav button[onclick*='${tabId}']`).classList.add('active');
+    }
 
-  function saveTeams() {
-    localStorage.setItem('bibleOlympicsTeams', JSON.stringify(teams));
-  }
+    const teamsContainer = document.getElementById('teamsContainer');
+    let teams = JSON.parse(localStorage.getItem('bibleOlympicsTeams')) || [];
 
-  function renderTeams() {
-    teamsContainer.innerHTML = '';
-    teams.forEach((team, index) => {
-      const div = document.createElement('div');
-      div.className = 'team-entry';
-      div.innerHTML = `
-        <strong>${team.name}</strong><br>
-        Members: ${team.members}<br>
-        Ages: ${team.ages}<br>
-        Score: <input type="number" value="${team.score}" onchange="updateScore(${index}, this.value)" />
-        <button onclick="changeScore(${index}, 1)">+1</button>
-        <button onclick="changeScore(${index}, -1)">-1</button>
-      `;
-      teamsContainer.appendChild(div);
+    function saveTeams() {
+      localStorage.setItem('bibleOlympicsTeams', JSON.stringify(teams));
+    }
+
+    function renderTeams() {
+      teamsContainer.innerHTML = '';
+      teams.forEach((team, i) => {
+        const div = document.createElement('div');
+        div.className = 'team-entry';
+        div.innerHTML = `
+          <strong>${team.name}</strong><br>
+          Members: ${team.members}<br>
+          Ages: ${team.ages}<br>
+          Score: <input type="number" value="${team.score}" onchange="updateScore(${i}, this.value)" />
+          <button onclick="changeScore(${i}, 1)">+1</button>
+          <button onclick="changeScore(${i}, -1)">-1</button>
+        `;
+        teamsContainer.appendChild(div);
+      });
+    }
+
+    function updateScore(i, v) {
+      teams[i].score = parseInt(v) || 0;
+      saveTeams();
+    }
+
+    function changeScore(i, delta) {
+      teams[i].score = (teams[i].score || 0) + delta;
+      saveTeams();
+      renderTeams();
+    }
+
+    document.getElementById('teamForm').addEventListener('submit', e => {
+      e.preventDefault();
+      teams.push({
+        name: e.target.teamName.value,
+        members: e.target.members.value,
+        ages: e.target.ages.value,
+        score: 0
+      });
+      saveTeams();
+      renderTeams();
+      e.target.reset();
     });
-  }
 
-  function updateScore(index, value) {
-    teams[index].score = parseInt(value) || 0;
-    saveTeams();
-  }
+    function showRandomVerse() {
+      document.getElementById('verseDisplay').innerText =
+        verses[Math.floor(Math.random() * verses.length)];
+    }
 
-  function changeScore(index, delta) {
-    teams[index].score = (teams[index].score || 0) + delta;
-    saveTeams();
+    function updateLeaderboard() {
+      const sorted = [...teams].sort((a, b) => b.score - a.score);
+      document.getElementById('leaderboardTable').innerHTML = `
+        <ol>
+          ${sorted.map(t => `<li><strong>${t.name}</strong>: ${t.score} pts</li>`).join('')}
+        </ol>`;
+    }
+
+    // On page load
     renderTeams();
-  }
-
-  document.getElementById('teamForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const name = document.getElementById('teamName').value;
-    const members = document.getElementById('members').value;
-    const ages = document.getElementById('ages').value;
-    teams.push({ name, members, ages, score: 0 });
-    saveTeams();
-    renderTeams();
-    this.reset();
-  });
-
-  function showRandomVerse() {
-    const random = verses[Math.floor(Math.random() * verses.length)];
-    document.getElementById('verseDisplay').innerText = random;
-  }
-
-  function updateLeaderboard() {
-    const sorted = [...teams].sort((a, b) => b.score - a.score);
-    let html = "<ol>";
-    sorted.forEach(s => {
-      html += `<li><strong>${s.name}</strong>: ${s.score} pts</li>`;
-    });
-    html += "</ol>";
-    document.getElementById('leaderboardTable').innerHTML = html;
-  }
-
-  // Initial load
-  renderTeams();
-</script>
+  </script>
 
 </body>
 </html>
