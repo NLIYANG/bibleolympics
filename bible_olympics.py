@@ -1,50 +1,108 @@
 import streamlit as st
 import pandas as pd
+import os
 
-st.title("📖 Bible Olympics: Team Tracker")
+st.set_page_config(page_title="📖 Bible Olympics", layout="centered")
+st.title("📖 Bible Olympics: Score Tracker & Team Manager")
 
-# Session state to store team data
+# --- Constants ---
+EVENTS = ["Bible Trivia", "Bible Memorization", "Bible Relay", "Sword Drill"]
+PLACEMENT_POINTS = {"1st": 10, "2nd": 7, "3rd": 5, "Participation": 2}
+EXTRA_POINTS = {"✨ Memory Bonus": 3, "💥 Teamwork": 2, "🧠 Creativity": 1}
+
+# --- Data Store ---
 if "teams" not in st.session_state:
     st.session_state.teams = {}
 
+# --- Helper to calculate total score ---
+def calculate_total(team):
+    return sum(team["score"].values()) + team.get("bonus", 0)
+
 # --- Team Registration ---
 st.header("📝 Register a Team")
+with st.form("register_team"):
+    team_name = st.text_input("Team Name")
+    members = st.text_area("Team Members (one per line)")
+    submitted = st.form_submit_button("Add Team")
 
-team_name = st.text_input("Team Name")
-members = st.text_area("List of Members (one per line)")
+    if submitted:
+        if team_name in st.session_state.teams:
+            st.warning("Team already exists!")
+        elif team_name.strip() and members.strip():
+            st.session_state.teams[team_name] = {
+                "members": members.splitlines(),
+                "score": {event: 0 for event in EVENTS},
+                "bonus": 0
+            }
+            st.success(f"Team '{team_name}' registered!")
+        else:
+            st.error("Please provide both team name and members.")
 
-if st.button("Add Team"):
-    if team_name and team_name not in st.session_state.teams:
-        st.session_state.teams[team_name] = {
-            "members": members.splitlines(),
-            "score": 0
-        }
-        st.success(f"Team '{team_name}' added!")
-    elif team_name in st.session_state.teams:
-        st.warning("Team already exists.")
-    else:
-        st.error("Please enter a team name.")
-
-# --- Score Updater ---
-st.header("🏆 Update Team Scores")
-
+# --- Scoring Section ---
+st.header("🏆 Event Scoring")
 if st.session_state.teams:
-    selected_team = st.selectbox("Choose a team", list(st.session_state.teams.keys()))
-    score_to_add = st.number_input("Points to add", min_value=0, step=1)
+    selected_event = st.selectbox("Select Event", EVENTS)
+    placement_teams = {}
 
-    if st.button("Update Score"):
-        st.session_state.teams[selected_team]["score"] += score_to_add
-        st.success(f"Added {score_to_add} points to {selected_team}!")
+    cols = st.columns(len(PLACEMENT_POINTS))
+    for i, (place, pts) in enumerate(PLACEMENT_POINTS.items()):
+        with cols[i]:
+            placement_teams[place] = st.selectbox(f"{place} ({pts} pts)", ["None"] + list(st.session_state.teams.keys()), key=f"{selected_event}_{place}")
+
+    if st.button("Assign Scores"):
+        for place, team_name in placement_teams.items():
+            if team_name and team_name != "None":
+                st.session_state.teams[team_name]["score"][selected_event] = PLACEMENT_POINTS[place]
+        st.success("Scores updated!")
 else:
-    st.info("No teams registered yet.")
+    st.info("Register teams first to enable scoring.")
+
+# --- Bonus Points ---
+st.header("✨ Bonus Points")
+if st.session_state.teams:
+    col1, col2 = st.columns(2)
+    with col1:
+        bonus_team = st.selectbox("Choose Team", list(st.session_state.teams.keys()), key="bonus_team")
+    with col2:
+        bonus_type = st.selectbox("Bonus Type", list(EXTRA_POINTS.keys()), key="bonus_type")
+
+    if st.button("Add Bonus"):
+        st.session_state.teams[bonus_team]["bonus"] += EXTRA_POINTS[bonus_type]
+        st.success(f"Added {EXTRA_POINTS[bonus_type]} bonus points to {bonus_team}")
 
 # --- Leaderboard ---
 st.header("📊 Leaderboard")
-
 if st.session_state.teams:
-    leaderboard_df = pd.DataFrame([
-        {"Team": team, "Score": data["score"]}
-        for team, data in st.session_state.teams.items()
-    ])
-    st.dataframe(leaderboard_df.sort_values(by="Score", ascending=False), use_container_width=True)
+    leaderboard = []
+    for team, data in st.session_state.teams.items():
+        total = calculate_total(data)
+        leaderboard.append({
+            "Team": team,
+            "Total Score": total,
+            **data["score"],
+            "Bonus": data.get("bonus", 0)
+        })
+    df = pd.DataFrame(leaderboard).sort_values(by="Total Score", ascending=False)
+    st.dataframe(df, use_container_width=True)
 
+# --- Save/Load Data ---
+st.header("💾 Save or Load Scores")
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("💾 Save to CSV"):
+        df.to_csv("bible_olympics_scores.csv", index=False)
+        st.success("Scores saved to 'bible_olympics_scores.csv'")
+
+with col2:
+    uploaded_file = st.file_uploader("📤 Load from CSV", type="csv")
+    if uploaded_file:
+        loaded_df = pd.read_csv(uploaded_file)
+        st.session_state.teams.clear()
+        for _, row in loaded_df.iterrows():
+            st.session_state.teams[row["Team"]] = {
+                "members": [],
+                "score": {event: int(row.get(event, 0)) for event in EVENTS},
+                "bonus": int(row.get("Bonus", 0))
+            }
+        st.success("Scores loaded successfully!")
