@@ -84,25 +84,3 @@ if st.session_state.teams:
         })
     df = pd.DataFrame(leaderboard).sort_values(by="Total Score", ascending=False)
     st.dataframe(df, use_container_width=True)
-
-# --- Save/Load Data ---
-st.header("💾 Save or Load Scores")
-col1, col2 = st.columns(2)
-
-with col1:
-    if st.button("💾 Save to CSV"):
-        df.to_csv("bible_olympics_scores.csv", index=False)
-        st.success("Scores saved to 'bible_olympics_scores.csv'")
-
-with col2:
-    uploaded_file = st.file_uploader("📤 Load from CSV", type="csv")
-    if uploaded_file:
-        loaded_df = pd.read_csv(uploaded_file)
-        st.session_state.teams.clear()
-        for _, row in loaded_df.iterrows():
-            st.session_state.teams[row["Team"]] = {
-                "members": [],
-                "score": {event: int(row.get(event, 0)) for event in EVENTS},
-                "bonus": int(row.get("Bonus", 0))
-            }
-        st.success("Scores loaded successfully!")
