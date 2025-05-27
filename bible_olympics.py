@@ -1,14 +1,9 @@
 import streamlit as st
 import pandas as pd
 import os
-from PIL import Image
 import copy
 
 st.set_page_config(page_title="📖 Bible Olympics", layout="centered")
-
-# --- Load logo ---
-logo = Image.open(r"C:\Users\0236106\Downloads\YG LOGOS (2).png")  # Adjust path as needed
-st.image(logo, width=150)
 
 st.title("📖 Bible Olympics: Score Tracker & Team Manager")
 
