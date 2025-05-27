@@ -5,6 +5,7 @@ import copy
 
 st.set_page_config(page_title="📖 Bible Olympics", layout="centered")
 
+
 st.title("📖 Bible Olympics: Score Tracker & Team Manager")
 
 # --- Constants ---
@@ -125,55 +126,55 @@ if st.session_state.teams:
 
     # Render leaderboard as styled HTML
     def render_html_table(df):
-    table_html = """
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        th, td {
-            padding: 8px 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f0f0f0;
-            font-weight: bold;
-        }
-        tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-        td.highlight {
-            background-color: #d1e7dd;
-            font-weight: bold;
-            color: #155724;
-            text-align: center;
-        }
-        td.team-cell {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
-    </style>
-    <table>
-        <thead><tr>""" + ''.join([f"<th>{col}</th>" for col in df.columns]) + "</tr></thead><tbody>"
+        table_html = """
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-family: 'Segoe UI', sans-serif;
+            }
+            th, td {
+                padding: 8px 12px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+            th {
+                background-color: #f0f0f0;
+                font-weight: bold;
+            }
+            tr:nth-child(even) {
+                background-color: #fafafa;
+            }
+            td.highlight {
+                background-color: #d1e7dd;
+                font-weight: bold;
+                color: #155724;
+                text-align: center;
+            }
+            td.team-cell {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 220px;
+            }
+        </style>
+        <table>
+            <thead><tr>""" + ''.join([f"<th>{col}</th>" for col in df.columns]) + "</tr></thead><tbody>"
 
-    for _, row in df.iterrows():
-        table_html += "<tr>"
-        for col in df.columns:
-            value = row[col]
-            if col == "Total Score":
-                table_html += f'<td class="highlight">{value}</td>'
-            elif col == "Team":
-                table_html += f'<td class="team-cell">{value}</td>'
-            else:
-                table_html += f'<td>{value}</td>'
-        table_html += "</tr>"
+        for _, row in df.iterrows():
+            table_html += "<tr>"
+            for col in df.columns:
+                value = row[col]
+                if col == "Total Score":
+                    table_html += f'<td class="highlight">{value}</td>'
+                elif col == "Team":
+                    table_html += f'<td class="team-cell">{value}</td>'
+                else:
+                    table_html += f'<td>{value}</td>'
+            table_html += "</tr>"
 
-    table_html += "</tbody></table>"
-    return table_html
+        table_html += "</tbody></table>"
+        return table_html
 
     # Undo Button
     if st.button("↩️ Undo Last Change") and st.session_state.undo_stack:
