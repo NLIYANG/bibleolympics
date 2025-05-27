@@ -1,14 +1,19 @@
 import streamlit as st
 import pandas as pd
 import os
+from PIL import Image
 import copy
 
 st.set_page_config(page_title="📖 Bible Olympics", layout="centered")
 
+# --- Load logo ---
+logo = Image.open(r"C:\Users\0236106\Downloads\YG LOGOS (2).png")  # Adjust path as needed
+st.image(logo, width=150)
+
 st.title("📖 Bible Olympics: Score Tracker & Team Manager")
 
 # --- Constants ---
-EVENTS = ["Bible Trivia", "Bible Memorization", "Bible Relay", "Sword Drill"]
+EVENTS = ["Bible Relay", "Sword Drill", "Bible Trivia", "Bible Memorization"]
 PLACEMENT_POINTS = {"1st": 10, "2nd": 7, "3rd": 5, "Participation": 2}
 EXTRA_POINTS = {
     "Best ✨ Team Spirit": 3,
@@ -117,6 +122,12 @@ if st.session_state.teams:
     medals = ["🥇", "🥈", "🥉"]
     df.insert(0, "🏅 Rank", [medals[i] if i < 3 else f"{i+1}" for i in range(len(df))])
 
+    # Reorder columns
+    ordered_cols = [
+        "🏅 Rank", "Team", "Bible Relay", "Sword Drill", "Bible Trivia", "Bible Memorization", "Bonus", "Total Score"
+    ]
+    df = df[ordered_cols]
+
     # Render leaderboard as styled HTML
     def render_html_table(df):
         table_html = """
@@ -127,8 +138,8 @@ if st.session_state.teams:
                 font-family: 'Segoe UI', sans-serif;
             }
             th, td {
-                padding: 8px;
-                text-align: center;
+                padding: 8px 12px;
+                text-align: left;
                 border-bottom: 1px solid #ddd;
             }
             th {
@@ -142,6 +153,7 @@ if st.session_state.teams:
                 background-color: #d1e7dd;
                 font-weight: bold;
                 color: #155724;
+                text-align: center;
             }
         </style>
         <table>
