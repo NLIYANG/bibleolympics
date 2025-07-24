@@ -6,7 +6,7 @@ import copy
 st.set_page_config(page_title="📖 Bible Olympics 2025", layout="centered")
 
 
-st.title("📖 Bible Olympics: Score Tracker & Team Manager")
+st.title("📖 Bible Olympics: Score Tracker & Team Manager!")
 
 # --- Constants ---
 EVENTS = ["Bible Relay", "Sword Drill", "Bible Trivia", "Bible Memorization"]
