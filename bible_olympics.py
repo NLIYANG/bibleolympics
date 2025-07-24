@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import copy
 
-st.set_page_config(page_title="📖 Bible Olympics", layout="centered")
+st.set_page_config(page_title="📖 Bible Olympics 2025", layout="centered")
 
 
 st.title("📖 Bible Olympics: Score Tracker & Team Manager")
